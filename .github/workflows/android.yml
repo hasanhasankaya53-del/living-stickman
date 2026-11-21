@@ -24,10 +24,35 @@ jobs:
 
       - name: API anahtarı sızıntı kontrolü
         run: |
-          if grep -rIE --exclude-dir=.git 'AIza[0-9A-Za-z_-]{35}' .; then
-            echo "HATA: Depoda API anahtarı benzeri bir değer bulundu."
+          # app/google-services.json Firebase istemci yapılandırmasıdır ve kendi Firebase
+          # anahtarını içerir (Gemini anahtarı değildir). Bu dosya dışında hiçbir yerde
+          # "AIza..." biçiminde anahtar olmamalıdır. Gemini anahtarı depoya girmez.
+          matches="$(find . -path ./.git -prune -o -type f ! -path './app/google-services.json' -print0 \
+            | xargs -0 grep -IlE 'AIza[0-9A-Za-z_-]{35}' || true)"
+          if [ -n "$matches" ]; then
+            echo "HATA: Aşağıdaki dosyalarda API anahtarı benzeri bir değer bulundu:"
+            echo "$matches"
             exit 1
           fi
+          echo "Sızıntı kontrolü temiz."
+
+      - name: google-services.json doğrulaması
+        run: |
+          f=app/google-services.json
+          if [ ! -f "$f" ]; then
+            echo "HATA: $f bulunamadı. Firebase eklentisi bu dosya olmadan derleyemez."
+            exit 1
+          fi
+          jq -e '.project_info.project_id and (.client | length > 0)' "$f" > /dev/null \
+            || { echo "HATA: $f geçerli bir Firebase istemci yapılandırması gibi görünmüyor."; exit 1; }
+          jq -e --arg p com.hasankaya.livingstickman \
+            '[.client[].client_info.android_client_info.package_name] | index($p) != null' "$f" > /dev/null \
+            || { echo "HATA: $f içinde com.hasankaya.livingstickman paket adı yok."; exit 1; }
+          if grep -qiE 'private_key|client_secret|service_account|BEGIN [A-Z ]*PRIVATE KEY' "$f"; then
+            echo "HATA: $f içinde gizli bilgi alanı var. Bu dosya yalnızca istemci yapılandırması olmalı."
+            exit 1
+          fi
+          echo "$f geçerli."
 
       - name: JDK 17 kur
         uses: actions/setup-java@v4
@@ -63,8 +88,8 @@ jobs:
         with:
           gradle-version: '8.13'
 
-      - name: Birim testleri ve debug APK
-        run: gradle testDebugUnitTest assembleDebug --stacktrace
+      - name: Birim testleri, debug APK ve release derleme kontrolü
+        run: gradle testDebugUnitTest assembleDebug compileReleaseKotlin --stacktrace
 
       - name: Test raporlarını yükle
         if: always()
