@@ -4,14 +4,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.google.services)
 }
-
-// Backend adresi gizli değildir; API anahtarı ise uygulamada ASLA bulunmaz.
-val backendBaseUrl: String =
-    ((project.findProperty("backendBaseUrl") as String?) ?: "")
-        .trim()
-        .replace("\"", "")
-        .replace("\\", "")
 
 android {
     namespace = "com.hasankaya.livingstickman"
@@ -24,7 +18,10 @@ android {
         versionCode = 1
         versionName = "0.1.0"
 
-        buildConfigField("String", "BACKEND_BASE_URL", "\"$backendBaseUrl\"")
+        // Cloud Run kullanılmıyor: backend adresi yok. Alan, ChatEngineFactory ve MainActivity
+        // geçici olarak ona bağlı olduğu için boş değerle duruyor; FirebaseChatEngine
+        // adımında Kotlin tarafıyla birlikte kaldırılacak. Gemini anahtarı uygulamada yoktur.
+        buildConfigField("String", "BACKEND_BASE_URL", "\"\"")
     }
 
     buildTypes {
@@ -66,6 +63,16 @@ dependencies {
     implementation(libs.androidx.compose.foundation)
     implementation(libs.androidx.compose.material3)
     implementation(libs.kotlinx.coroutines.android)
+
+    // Firebase AI Logic: Gemini anahtarı uygulamada değil, Firebase tarafında durur.
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.ai)
+
+    // App Check: FirebaseAppCheck sınıfı doğrudan kullanıldığı için açıkça eklendi.
+    // Yayın sürümünde Play Integrity, yalnızca debug derlemesinde Debug sağlayıcısı.
+    implementation(libs.firebase.appcheck)
+    implementation(libs.firebase.appcheck.playintegrity)
+    debugImplementation(libs.firebase.appcheck.debug)
 
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
