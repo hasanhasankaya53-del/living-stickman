@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "404300760110",
+    "project_id": "living-stickman",
+    "storage_bucket": "living-stickman.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:404300760110:android:08a190161ee2890a61cbbf",
+        "android_client_info": {
+          "package_name": "com.hasankaya.livingstickman"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAo49dChkhrgIWPdFNqolGB2JdDwlpYM9M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
