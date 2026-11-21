@@ -57,4 +57,28 @@ data class ChatReply(
 )
 
 enum class NotConfiguredReason {
-    /** Backend adresi (BACKEND_BASE_URL)
+    /** Backend adresi (BACKEND_BASE_URL) ayarlanmamış. */
+    BACKEND_URL_MISSING,
+
+    /** Adres var, fakat gerçek istemci (RemoteChatEngine) bu sürümde henüz yok. */
+    CLIENT_NOT_IMPLEMENTED,
+}
+
+sealed interface ChatEngineState {
+    data class NotConfigured(val reason: NotConfiguredReason) : ChatEngineState
+    data object Offline : ChatEngineState
+    data object Ready : ChatEngineState
+    data class Error(val message: String) : ChatEngineState
+}
+
+sealed interface ChatFailure {
+    data class NotConfigured(val reason: NotConfiguredReason) : ChatFailure
+    data object Offline : ChatFailure
+    data class Rejected(val code: String, val message: String) : ChatFailure
+    data object InvalidResponse : ChatFailure
+}
+
+sealed interface ChatResult {
+    data class Success(val reply: ChatReply) : ChatResult
+    data class Failure(val failure: ChatFailure) : ChatResult
+}
