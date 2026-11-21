@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Living Stickman</string>
+
+    <string name="home_title">Living Stickman</string>
+    <string name="home_subtitle">Sanal oda ve stickman sonraki aşamalarda eklenecek.</string>
+
+    <string name="status_not_configured_url_title">Yapay zekâ bağlantısı kurulmadı</string>
+    <string name="status_not_configured_url_detail">Backend adresi ayarlanmadı. Stickman şu an cevap veremez.</string>
+
+    <string name="status_not_configured_client_title">Yapay zekâ bağlantısı kurulmadı</string>
+    <string name="status_not_configured_client_detail">Backend adresi var, ancak bağlantı istemcisi bu sürümde henüz yok. Stickman şu an cevap veremez.</string>
+
+    <string name="status_offline_title">Backend\'e ulaşılamıyor</string>
+    <string name="status_offline_detail">İnternet bağlantını ya da backend durumunu kontrol et. Stickman şu an cevap veremez.</string>
+
+    <string name="status_error_title">Yapay zekâ bağlantısında hata var</string>
+    <string name="status_error_detail">Bağlantı hatası giderilene kadar stickman cevap veremez.</string>
+
+    <string name="status_ready_title">Yapay zekâ bağlantısı hazır</string>
+    <string name="status_ready_detail">Stickman yazılı cevap verebilir.</string>
+</resources>
