@@ -1,8 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- Firebase AI Logic ile HTTPS iletişimi için. Mikrofon izni 5. aşamada eklenecek. -->
+    <!-- İnternet bağlantısı -->
     <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- Diğer uygulamaların üzerinde görünme -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
+    <!-- Ön plan servisi -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
+    <!-- Android 13 ve üzeri bildirim izni -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:name=".LivingStickmanApp"
@@ -12,14 +21,24 @@
         android:supportsRtl="false"
         android:theme="@style/Theme.LivingStickman">
 
+        <!-- Ana uygulama ekranı -->
         <activity
             android:name=".MainActivity"
             android:exported="true">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
+
+        <!-- Ekran üzerinde yaşayan Stickman servisi -->
+        <service
+            android:name=".overlay.StickmanOverlayService"
+            android:enabled="true"
+            android:exported="false" />
+
     </application>
 
 </manifest>
