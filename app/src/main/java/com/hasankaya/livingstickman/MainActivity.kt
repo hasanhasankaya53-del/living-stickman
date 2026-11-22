@@ -3,24 +3,33 @@ package com.hasankaya.livingstickman
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import com.hasankaya.livingstickman.ai.ChatEngine
+import androidx.activity.viewModels
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import com.hasankaya.livingstickman.ai.ChatEngineFactory
-import com.hasankaya.livingstickman.ui.main.MainScreen
-import com.hasankaya.livingstickman.ui.main.toConnectionStatus
+import com.hasankaya.livingstickman.ui.chat.ChatScreen
+import com.hasankaya.livingstickman.ui.chat.ChatViewModel
+import com.hasankaya.livingstickman.ui.chat.ChatViewModelFactory
 import com.hasankaya.livingstickman.ui.theme.LivingStickmanTheme
 
 class MainActivity : ComponentActivity() {
 
-    // Backend adresi derleme zamanında gelir (gizli değil). API anahtarı uygulamada yoktur.
-    private val chatEngine: ChatEngine = ChatEngineFactory.create(BuildConfig.BACKEND_BASE_URL)
+    private val viewModel: ChatViewModel by viewModels {
+        ChatViewModelFactory(ChatEngineFactory.createGemini())
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+
         setContent {
             LivingStickmanTheme {
-                MainScreen(status = chatEngine.state.toConnectionStatus())
+                val state by viewModel.state.collectAsState()
+
+                ChatScreen(
+                    state = state,
+                    onInputChange = viewModel::onInputChange,
+                    onSend = viewModel::send,
+                )
             }
         }
     }
