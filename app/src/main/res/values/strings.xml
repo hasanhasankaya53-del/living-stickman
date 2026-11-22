@@ -1,22 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Living Stickman</string>
-
     <string name="home_title">Living Stickman</string>
     <string name="home_subtitle">Sanal oda ve stickman sonraki aşamalarda eklenecek.</string>
 
     <string name="status_not_configured_url_title">Yapay zekâ bağlantısı kurulmadı</string>
-    <string name="status_not_configured_url_detail">Backend adresi ayarlanmadı. Stickman şu an cevap veremez.</string>
-
+    <string name="status_not_configured_url_detail">Backend adresi ayarlanmadı.</string>
     <string name="status_not_configured_client_title">Yapay zekâ bağlantısı kurulmadı</string>
-    <string name="status_not_configured_client_detail">Backend adresi var, ancak bağlantı istemcisi bu sürümde henüz yok. Stickman şu an cevap veremez.</string>
-
-    <string name="status_offline_title">Backend\'e ulaşılamıyor</string>
-    <string name="status_offline_detail">İnternet bağlantını ya da backend durumunu kontrol et. Stickman şu an cevap veremez.</string>
-
-    <string name="status_error_title">Yapay zekâ bağlantısında hata var</string>
-    <string name="status_error_detail">Bağlantı hatası giderilene kadar stickman cevap veremez.</string>
-
-    <string name="status_ready_title">Yapay zekâ bağlantısı hazır</string>
+    <string name="status_not_configured_client_detail">Bağlantı istemcisi henüz hazır değil.</string>
+    <string name="status_offline_title">İnternet bağlantısı yok</string>
+    <string name="status_offline_detail">İnternet bağlantını kontrol et.</string>
+    <string name="status_error_title">Bağlantı hatası</string>
+    <string name="status_error_detail">Bağlantı sırasında bir hata oluştu.</string>
+    <string name="status_ready_title">Bağlantı hazır</string>
     <string name="status_ready_detail">Stickman yazılı cevap verebilir.</string>
+
+    <string name="chat_empty_hint">Merhaba! Ben Living Stickman. Seninle tanışmak için sabırsızlanıyorum.</string>
+    <string name="chat_input_hint">Mesajını yaz...</string>
+    <string name="chat_send">Gönder</string>
+    <string name="chat_typing">Yanıt hazırlanıyor...</string>
+    <string name="chat_role_user">Sen</string>
+    <string name="chat_role_stickman">Living Stickman</string>
+    <string name="chat_error_not_configured">Bağlantı henüz yapılandırılmadı.</string>
+    <string name="chat_error_offline">İnternet bağlantısı kurulamadı.</string>
+    <string name="chat_error_blocked">Mesaj güvenlik nedeniyle engellendi.</string>
+    <string name="chat_error_quota">Kullanım sınırına ulaşıldı.</string>
+    <string name="chat_error_service">Hizmet şu anda kullanılamıyor.</string>
+    <string name="chat_error_invalid_response">Geçersiz yanıt alındı.</string>
+    <string name="chat_error_unknown">Beklenmeyen bir hata oluştu.</string>
 </resources>
