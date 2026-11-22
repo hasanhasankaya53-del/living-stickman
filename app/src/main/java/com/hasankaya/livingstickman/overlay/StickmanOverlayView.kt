@@ -7,6 +7,7 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.RectF
 import android.view.View
+import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.sin
@@ -15,8 +16,6 @@ class StickmanOverlayView(context: Context) : View(context) {
 
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val density = resources.displayMetrics.density
-
-    private fun dp(value: Float): Float = value * density
 
     private var animationFrame =
         StickmanAnimation.AnimationFrame(
@@ -32,6 +31,8 @@ class StickmanOverlayView(context: Context) : View(context) {
             sleepOffset = 0f
         )
 
+    private fun dp(value: Float): Float = value * density
+
     fun setAnimationFrame(
         frame: StickmanAnimation.AnimationFrame
     ) {
@@ -41,6 +42,8 @@ class StickmanOverlayView(context: Context) : View(context) {
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
+
+        if (width <= 0 || height <= 0) return
 
         val save = canvas.save()
 
@@ -58,14 +61,17 @@ class StickmanOverlayView(context: Context) : View(context) {
 
         drawShadow(canvas, frame)
         drawCape(canvas, frame)
+        drawCapeDetails(canvas, frame)
         drawLegs(canvas, frame)
-        drawBoots(canvas)
+        drawBoots(canvas, frame)
         drawBody(canvas)
         drawArmorDetails(canvas)
+        drawBelt(canvas)
         drawArms(canvas, frame)
-        drawHands(canvas)
+        drawHands(canvas, frame)
         drawHead(canvas, frame)
-        drawCrown(canvas)
+        drawFace(canvas, frame)
+        drawCrown(canvas, frame)
         drawEffects(canvas, frame)
 
         canvas.restoreToCount(save)
@@ -75,19 +81,17 @@ class StickmanOverlayView(context: Context) : View(context) {
         canvas: Canvas,
         frame: StickmanAnimation.AnimationFrame
     ) {
-        paint.color = Color.argb(65, 0, 0, 0)
         paint.style = Paint.Style.FILL
+        paint.color = Color.argb(75, 0, 0, 0)
 
-        val shadowScale = 1f - frame.jumpHeight / 120f
+        val shadowScale =
+            (1f - frame.jumpHeight / 120f).coerceIn(0.35f, 1f)
 
         canvas.save()
-        canvas.scale(
-            shadowScale.coerceIn(0.4f, 1f),
-            1f
-        )
+        canvas.scale(shadowScale, 1f)
 
         canvas.drawOval(
-            RectF(-34f, 76f, 34f, 85f),
+            RectF(-35f, 76f, 35f, 85f),
             paint
         )
 
@@ -99,23 +103,24 @@ class StickmanOverlayView(context: Context) : View(context) {
         frame: StickmanAnimation.AnimationFrame
     ) {
         val movement = frame.capeSwing
+        val running = frame.motion == StickmanAnimation.Motion.RUN
 
         val cape = Path().apply {
             moveTo(-12f, -25f)
 
             cubicTo(
-                -28f,
-                -15f + movement,
-                -36f,
-                20f + movement,
-                -43f,
+                -27f,
+                -16f + movement,
+                -38f,
+                12f + movement,
+                if (running) -53f else -43f,
                 66f + movement
             )
 
             cubicTo(
-                -20f,
-                61f + movement,
-                4f,
+                -24f,
+                65f + movement,
+                2f,
                 57f - movement,
                 16f,
                 67f
@@ -125,39 +130,39 @@ class StickmanOverlayView(context: Context) : View(context) {
             close()
         }
 
-        paint.color = Color.rgb(130, 5, 24)
+        paint.color = Color.rgb(100, 3, 20)
+        paint.style = Paint.Style.FILL
         canvas.drawPath(cape, paint)
 
-        paint.color = Color.rgb(195, 15, 39)
-
         val innerCape = Path().apply {
-            moveTo(-10f, -20f)
+            moveTo(-10f, -21f)
 
             cubicTo(
-                -22f,
-                5f + movement,
-                -26f,
-                37f + movement,
-                -35f,
+                -21f,
+                2f + movement,
+                -28f,
+                34f + movement,
+                -37f,
                 59f + movement
             )
 
             cubicTo(
                 -12f,
-                53f + movement,
-                2f,
-                56f - movement,
+                57f + movement,
+                3f,
+                55f - movement,
                 10f,
-                61f
+                62f
             )
 
-            lineTo(9f, -20f)
+            lineTo(9f, -21f)
             close()
         }
 
+        paint.color = Color.rgb(190, 8, 36)
         canvas.drawPath(innerCape, paint)
 
-        paint.color = Color.rgb(245, 65, 75)
+        paint.color = Color.rgb(240, 50, 70)
         paint.strokeWidth = 1.5f
         paint.style = Paint.Style.STROKE
 
@@ -166,58 +171,34 @@ class StickmanOverlayView(context: Context) : View(context) {
         paint.style = Paint.Style.FILL
     }
 
-    private fun drawBody(canvas: Canvas) {
+    private fun drawCapeDetails(
+        canvas: Canvas,
+        frame: StickmanAnimation.AnimationFrame
+    ) {
+        val movement = frame.capeSwing
 
-        val armor = Path().apply {
-            moveTo(-13f, -29f)
-            lineTo(13f, -29f)
-            lineTo(19f, 20f)
-            lineTo(12f, 37f)
-            lineTo(-12f, 37f)
-            lineTo(-19f, 20f)
-            close()
-        }
-
-        paint.color = Color.rgb(17, 17, 24)
-        canvas.drawPath(armor, paint)
-
-        paint.color = Color.rgb(100, 100, 120)
-        paint.strokeWidth = 2f
+        paint.color = Color.rgb(235, 65, 78)
+        paint.strokeWidth = 1.2f
+        paint.strokeCap = Paint.Cap.ROUND
         paint.style = Paint.Style.STROKE
 
-        canvas.drawPath(armor, paint)
+        canvas.drawLine(
+            -16f,
+            -8f + movement * 0.2f,
+            -29f,
+            40f + movement,
+            paint
+        )
+
+        canvas.drawLine(
+            -9f,
+            0f + movement * 0.2f,
+            -18f,
+            49f + movement,
+            paint
+        )
 
         paint.style = Paint.Style.FILL
-    }
-
-    private fun drawArmorDetails(canvas: Canvas) {
-
-        paint.color = Color.rgb(55, 55, 70)
-
-        canvas.drawRoundRect(
-            RectF(-12f, -22f, 12f, -12f),
-            3f,
-            3f,
-            paint
-        )
-
-        paint.color = Color.rgb(205, 165, 55)
-
-        canvas.drawRoundRect(
-            RectF(-15f, 1f, 15f, 8f),
-            2f,
-            2f,
-            paint
-        )
-
-        paint.color = Color.rgb(255, 220, 95)
-
-        canvas.drawCircle(0f, 4.5f, 4f, paint)
-
-        paint.color = Color.rgb(90, 90, 105)
-        paint.strokeWidth = 2f
-
-        canvas.drawLine(-12f, 15f, 12f, 15f, paint)
     }
 
     private fun drawLegs(
@@ -238,46 +219,139 @@ class StickmanOverlayView(context: Context) : View(context) {
         canvas.translate(side * 9f, 30f)
         canvas.rotate(side * swing)
 
-        paint.color = Color.rgb(18, 18, 25)
-        paint.strokeWidth = 10f
+        paint.color = Color.rgb(16, 16, 23)
+        paint.strokeWidth = 11f
         paint.strokeCap = Paint.Cap.ROUND
         paint.style = Paint.Style.STROKE
 
-        canvas.drawLine(0f, 0f, 0f, 34f, paint)
+        canvas.drawLine(0f, 0f, 0f, 25f, paint)
 
-        paint.color = Color.rgb(105, 105, 120)
+        paint.color = Color.rgb(65, 65, 80)
+        paint.strokeWidth = 8f
+
+        canvas.drawLine(0f, 23f, 0f, 34f, paint)
+
+        paint.color = Color.rgb(120, 120, 135)
         paint.strokeWidth = 2f
 
         canvas.drawLine(-4f, 10f, 4f, 10f, paint)
-        canvas.drawLine(-4f, 22f, 4f, 22f, paint)
+        canvas.drawLine(-4f, 20f, 4f, 20f, paint)
 
         paint.style = Paint.Style.FILL
 
         canvas.restore()
     }
 
-    private fun drawBoots(canvas: Canvas) {
+    private fun drawBoots(
+        canvas: Canvas,
+        frame: StickmanAnimation.AnimationFrame
+    ) {
+        drawBoot(canvas, -1, frame.legSwing)
+        drawBoot(canvas, 1, frame.legSwing)
+    }
 
-        paint.color = Color.rgb(12, 12, 17)
+    private fun drawBoot(
+        canvas: Canvas,
+        side: Int,
+        swing: Float
+    ) {
+        canvas.save()
+
+        canvas.translate(side * 9f, 64f)
+        canvas.rotate(side * swing)
+
+        paint.color = Color.rgb(10, 10, 16)
 
         canvas.drawRoundRect(
-            RectF(-23f, 64f, -5f, 73f),
-            3f,
-            3f,
-            paint
-        )
-
-        canvas.drawRoundRect(
-            RectF(5f, 64f, 23f, 73f),
+            RectF(-5f, -2f, 14f, 8f),
             3f,
             3f,
             paint
         )
 
         paint.color = Color.rgb(190, 145, 45)
+        paint.strokeWidth = 1.5f
 
-        canvas.drawLine(-20f, 68f, -7f, 68f, paint)
-        canvas.drawLine(7f, 68f, 20f, 68f, paint)
+        canvas.drawLine(0f, 2f, 10f, 2f, paint)
+
+        canvas.restore()
+    }
+
+    private fun drawBody(canvas: Canvas) {
+        val armor = Path().apply {
+            moveTo(-13f, -29f)
+            lineTo(13f, -29f)
+            lineTo(19f, 20f)
+            lineTo(12f, 37f)
+            lineTo(-12f, 37f)
+            lineTo(-19f, 20f)
+            close()
+        }
+
+        paint.color = Color.rgb(13, 13, 21)
+        paint.style = Paint.Style.FILL
+        canvas.drawPath(armor, paint)
+
+        paint.color = Color.rgb(95, 95, 115)
+        paint.strokeWidth = 2f
+        paint.style = Paint.Style.STROKE
+
+        canvas.drawPath(armor, paint)
+
+        paint.style = Paint.Style.FILL
+
+        paint.color = Color.rgb(35, 35, 48)
+
+        canvas.drawRoundRect(
+            RectF(-10f, -25f, 10f, 32f),
+            4f,
+            4f,
+            paint
+        )
+    }
+
+    private fun drawArmorDetails(canvas: Canvas) {
+        paint.color = Color.rgb(75, 75, 92)
+
+        canvas.drawRoundRect(
+            RectF(-12f, -22f, 12f, -12f),
+            3f,
+            3f,
+            paint
+        )
+
+        paint.color = Color.rgb(160, 160, 175)
+        paint.strokeWidth = 1.5f
+
+        canvas.drawLine(-10f, -18f, 10f, -18f, paint)
+
+        paint.color = Color.rgb(120, 120, 140)
+
+        canvas.drawCircle(-13f, -13f, 3f, paint)
+        canvas.drawCircle(13f, -13f, 3f, paint)
+    }
+
+    private fun drawBelt(canvas: Canvas) {
+        paint.color = Color.rgb(110, 75, 28)
+
+        canvas.drawRoundRect(
+            RectF(-17f, 1f, 17f, 8f),
+            2f,
+            2f,
+            paint
+        )
+
+        paint.color = Color.rgb(230, 180, 55)
+
+        canvas.drawRoundRect(
+            RectF(-5f, 0f, 5f, 9f),
+            2f,
+            2f,
+            paint
+        )
+
+        paint.color = Color.rgb(255, 225, 115)
+        canvas.drawCircle(0f, 4.5f, 2f, paint)
     }
 
     private fun drawArms(
@@ -305,18 +379,19 @@ class StickmanOverlayView(context: Context) : View(context) {
 
         canvas.rotate(angle)
 
-        paint.color = Color.rgb(20, 20, 27)
-        paint.strokeWidth = 9f
+        paint.color = Color.rgb(17, 17, 24)
+        paint.strokeWidth = 10f
         paint.strokeCap = Paint.Cap.ROUND
         paint.style = Paint.Style.STROKE
 
-        canvas.drawLine(0f, 0f, 0f, 24f, paint)
+        canvas.drawLine(0f, 0f, 0f, 21f, paint)
 
+        paint.color = Color.rgb(70, 70, 88)
         paint.strokeWidth = 7f
 
-        canvas.drawLine(0f, 24f, 0f, 35f, paint)
+        canvas.drawLine(0f, 19f, 0f, 32f, paint)
 
-        paint.color = Color.rgb(105, 105, 120)
+        paint.color = Color.rgb(125, 125, 145)
         paint.strokeWidth = 2f
 
         canvas.drawLine(-3f, 12f, 3f, 12f, paint)
@@ -326,12 +401,56 @@ class StickmanOverlayView(context: Context) : View(context) {
         canvas.restore()
     }
 
-    private fun drawHands(canvas: Canvas) {
+    private fun drawHands(
+        canvas: Canvas,
+        frame: StickmanAnimation.AnimationFrame
+    ) {
+        drawHand(
+            canvas,
+            -1,
+            frame.armSwing,
+            frame.waveAngle
+        )
 
-        paint.color = Color.rgb(15, 15, 20)
+        drawHand(
+            canvas,
+            1,
+            frame.armSwing,
+            0f
+        )
+    }
 
-        canvas.drawCircle(-15f, 17f, 4f, paint)
-        canvas.drawCircle(15f, 17f, 4f, paint)
+    private fun drawHand(
+        canvas: Canvas,
+        side: Int,
+        swing: Float,
+        wave: Float
+    ) {
+        canvas.save()
+
+        canvas.translate(side * 15f, -20f)
+
+        val angle = if (side < 0) {
+            -swing - 25f - wave
+        } else {
+            swing + 25f
+        }
+
+        canvas.rotate(angle)
+        canvas.translate(0f, 32f)
+
+        paint.color = Color.rgb(12, 12, 18)
+        canvas.drawCircle(0f, 0f, 5f, paint)
+
+        paint.color = Color.rgb(125, 125, 145)
+        paint.strokeWidth = 1f
+        paint.style = Paint.Style.STROKE
+
+        canvas.drawCircle(0f, 0f, 5f, paint)
+
+        paint.style = Paint.Style.FILL
+
+        canvas.restore()
     }
 
     private fun drawHead(
@@ -341,10 +460,10 @@ class StickmanOverlayView(context: Context) : View(context) {
         canvas.save()
         canvas.rotate(frame.headTilt)
 
-        paint.color = Color.rgb(12, 12, 18)
+        paint.color = Color.rgb(10, 10, 16)
         canvas.drawCircle(0f, -45f, 17f, paint)
 
-        paint.color = Color.rgb(100, 100, 120)
+        paint.color = Color.rgb(105, 105, 125)
         paint.strokeWidth = 2f
         paint.style = Paint.Style.STROKE
 
@@ -352,23 +471,58 @@ class StickmanOverlayView(context: Context) : View(context) {
 
         paint.style = Paint.Style.FILL
 
-        if (frame.motion == StickmanAnimation.Motion.SLEEP) {
-            paint.color = Color.WHITE
-            paint.strokeWidth = 2f
+        canvas.restore()
+    }
 
-            canvas.drawLine(-8f, -45f, -3f, -45f, paint)
-            canvas.drawLine(3f, -45f, 8f, -45f, paint)
-        } else {
-            paint.color = Color.rgb(255, 205, 70)
+    private fun drawFace(
+        canvas: Canvas,
+        frame: StickmanAnimation.AnimationFrame
+    ) {
+        canvas.save()
+        canvas.rotate(frame.headTilt)
 
-            canvas.drawCircle(-6f, -46f, 2.5f, paint)
-            canvas.drawCircle(6f, -46f, 2.5f, paint)
+        when (frame.motion) {
+            StickmanAnimation.Motion.SLEEP -> {
+                paint.color = Color.WHITE
+                paint.strokeWidth = 2f
+                paint.style = Paint.Style.STROKE
+
+                canvas.drawLine(-8f, -45f, -3f, -45f, paint)
+                canvas.drawLine(3f, -45f, 8f, -45f, paint)
+
+                paint.style = Paint.Style.FILL
+            }
+
+            else -> {
+                paint.color = Color.rgb(255, 205, 70)
+
+                canvas.drawCircle(-6f, -46f, 2.5f, paint)
+                canvas.drawCircle(6f, -46f, 2.5f, paint)
+
+                if (frame.motion == StickmanAnimation.Motion.WAVE) {
+                    paint.color = Color.WHITE
+                    paint.strokeWidth = 1.5f
+                    paint.style = Paint.Style.STROKE
+
+                    canvas.drawArc(
+                        RectF(-5f, -42f, 5f, -36f),
+                        0f,
+                        180f,
+                        false,
+                        paint
+                    )
+
+                    paint.style = Paint.Style.FILL
+                }
+            }
         }
 
         canvas.restore()
     }
 
-    private fun drawCrown(canvas: Canvas) {
+    private fun drawCrown(canvas: Canvas, frame: StickmanAnimation.AnimationFrame) {
+        canvas.save()
+        canvas.rotate(frame.headTilt)
 
         val crown = Path().apply {
             moveTo(-15f, -59f)
@@ -381,23 +535,28 @@ class StickmanOverlayView(context: Context) : View(context) {
             close()
         }
 
-        paint.color = Color.rgb(255, 185, 25)
+        paint.color = Color.rgb(210, 145, 15)
         canvas.drawPath(crown, paint)
 
-        paint.color = Color.rgb(255, 230, 120)
-        paint.strokeWidth = 2f
+        paint.color = Color.rgb(255, 195, 35)
         paint.style = Paint.Style.STROKE
+        paint.strokeWidth = 2f
 
         canvas.drawPath(crown, paint)
 
         paint.style = Paint.Style.FILL
 
-        paint.color = Color.RED
+        paint.color = Color.rgb(255, 225, 100)
         canvas.drawCircle(0f, -71f, 3f, paint)
+
+        paint.color = Color.RED
+        canvas.drawCircle(0f, -63f, 2f, paint)
 
         paint.color = Color.WHITE
         canvas.drawCircle(-10f, -69f, 1.5f, paint)
         canvas.drawCircle(10f, -69f, 1.5f, paint)
+
+        canvas.restore()
     }
 
     private fun drawEffects(
@@ -405,7 +564,6 @@ class StickmanOverlayView(context: Context) : View(context) {
         frame: StickmanAnimation.AnimationFrame
     ) {
         when (frame.motion) {
-
             StickmanAnimation.Motion.SLEEP -> {
                 paint.color = Color.WHITE
                 paint.textSize = 14f
@@ -430,12 +588,18 @@ class StickmanOverlayView(context: Context) : View(context) {
                 paint.strokeWidth = 2f
                 paint.style = Paint.Style.STROKE
 
-                canvas.drawCircle(0f, 0f, 28f, paint)
+                val pulse =
+                    26f + abs(sin(frame.progress * PI * 2)).toFloat() * 5f
+
+                canvas.drawCircle(0f, 0f, pulse, paint)
 
                 paint.style = Paint.Style.FILL
             }
 
+            MotionPlaceholder -> Unit
             else -> Unit
         }
     }
+
+    private object MotionPlaceholder
 }
