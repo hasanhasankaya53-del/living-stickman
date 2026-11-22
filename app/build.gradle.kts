@@ -63,8 +63,9 @@ dependencies {
     implementation(libs.androidx.compose.foundation)
     implementation(libs.androidx.compose.material3)
     implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
 
-    // Firebase AI Logic: Gemini anahtarı uygulamada değil, Firebase tarafında durur.
+// Firebase AI Logic: Gemini anahtarı uygulamada değil, Firebase tarafında durur.
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.ai)
 
