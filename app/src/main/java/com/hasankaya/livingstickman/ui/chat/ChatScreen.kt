@@ -25,14 +25,32 @@ fun ChatScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Text(
-                "Living Stickman",
+                text = "Living Stickman",
                 style = MaterialTheme.typography.headlineSmall
             )
 
-            CharacterView()
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+            ) {
+                RoomView(
+                    modifier = Modifier.fillMaxSize()
+                )
+
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(bottom = 20.dp)
+                ) {
+                    CharacterView()
+                }
+            }
 
             LazyColumn(
-                modifier = Modifier.weight(1f).fillMaxWidth(),
+                modifier = Modifier
+                    .weight(0.7f)
+                    .fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 items(state.messages, key = { it.id }) { message ->
