@@ -895,3 +895,5 @@ class RoomState(
 fun getCharacterPosition(): Offset {
     return mutableState.value.character.position
 }
+
+}
