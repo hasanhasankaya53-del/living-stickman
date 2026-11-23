@@ -885,5 +885,13 @@ class RoomState(
     // ==================================================
 
     fun resetRoom() {
-
+    mutableState.update { current ->
+        initialSnapshot.copy(
+            revision = current.revision + 1L
+        )
+    }
+}
         
+fun getCharacterPosition(): Offset {
+    return mutableState.value.character.position
+}
