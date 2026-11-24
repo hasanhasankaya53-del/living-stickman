@@ -1,4 +1,3 @@
-
 package com.hasankaya.livingstickman.room
 
 import androidx.compose.foundation.Canvas
@@ -778,4 +777,529 @@ class RoomRenderer(
             size = Size(85f, 65f),
             cornerRadius = androidx.compose.ui.geometry.CornerRadius(12f)
         )
+/
+        // Yastık dikiş çizgisi.
+        drawLine(
+            color = Color(0xFFD1C5B8),
+            start = Offset(x + 28f, y + 44f),
+            end = Offset(x + 92f, y + 44f),
+            strokeWidth = 2f
+        )
 
+        // Yatak başlığı.
+        drawRoundRect(
+            color = Color(0xFF493024),
+            topLeft = Offset(x - 8f, y - 5f),
+            size = Size(16f, 165f),
+            cornerRadius = androidx.compose.ui.geometry.CornerRadius(7f)
+        )
+    }
+
+    // ==================================================
+    // 13. KOLTUK
+    // ==================================================
+
+    private fun DrawScope.drawSofa() {
+        val x = 390f
+        val y = 455f
+
+        drawRoundRect(
+            color = Color(0xFF493044),
+            topLeft = Offset(x, y - 42f),
+            size = Size(230f, 92f),
+            cornerRadius = androidx.compose.ui.geometry.CornerRadius(22f)
+        )
+
+        drawRoundRect(
+            brush = Brush.verticalGradient(
+                colors = listOf(
+                    Color(0xFF98617F),
+                    Color(0xFF70445F)
+                ),
+                startY = y,
+                endY = y + 62f
+            ),
+            topLeft = Offset(x + 18f, y + 4f),
+            size = Size(194f, 62f),
+            cornerRadius = androidx.compose.ui.geometry.CornerRadius(15f)
+        )
+
+        drawRoundRect(
+            color = Color(0xFF70445F),
+            topLeft = Offset(x - 8f, y - 8f),
+            size = Size(34f, 78f),
+            cornerRadius = androidx.compose.ui.geometry.CornerRadius(13f)
+        )
+
+        drawRoundRect(
+            color = Color(0xFF70445F),
+            topLeft = Offset(x + 204f, y - 8f),
+            size = Size(34f, 78f),
+            cornerRadius = androidx.compose.ui.geometry.CornerRadius(13f)
+        )
+
+        drawLine(
+            color = Color(0xFFD6A8BE).copy(alpha = 0.65f),
+            start = Offset(x + 115f, y + 10f),
+            end = Offset(x + 115f, y + 58f),
+            strokeWidth = 2f
+        )
+
+        listOf(x + 25f, x + 195f).forEach { legX ->
+            drawLine(
+                color = Color(0xFF39251D),
+                start = Offset(legX, y + 65f),
+                end = Offset(legX - 3f, y + 82f),
+                strokeWidth = 7f,
+                cap = StrokeCap.Round
+            )
+        }
+    }
+
+    // ==================================================
+    // 14. BİLGİSAYAR MASASI
+    // ==================================================
+
+    private fun DrawScope.drawComputerDesk(
+        snapshot: RoomSnapshot
+    ) {
+        val x = 690f
+        val y = 430f
+
+        val computerIsOn =
+            snapshot.computerState == ComputerState.ON ||
+                snapshot.computerState == ComputerState.STARTING
+
+        drawRoundRect(
+            color = Color(0xFF5B3928),
+            topLeft = Offset(x, y),
+            size = Size(225f, 18f),
+            cornerRadius = androidx.compose.ui.geometry.CornerRadius(5f)
+        )
+
+        drawRect(
+            color = Color(0xFF8A5B3B),
+            topLeft = Offset(x + 8f, y + 4f),
+            size = Size(209f, 5f)
+        )
+
+        drawRect(
+            color = Color(0xFF493024),
+            topLeft = Offset(x + 18f, y + 18f),
+            size = Size(13f, 112f)
+        )
+
+        drawRect(
+            color = Color(0xFF493024),
+            topLeft = Offset(x + 195f, y + 18f),
+            size = Size(13f, 112f)
+        )
+
+        drawRoundRect(
+            color = Color(0xFF20242B),
+            topLeft = Offset(x + 62f, y - 91f),
+            size = Size(105f, 78f),
+            cornerRadius = androidx.compose.ui.geometry.CornerRadius(7f)
+        )
+
+        drawRoundRect(
+            brush = if (computerIsOn) {
+                Brush.linearGradient(
+                    colors = listOf(
+                        Color(0xFF164B70),
+                        Color(0xFF45A6C9),
+                        Color(0xFF172E55)
+                    ),
+                    start = Offset(x + 67f, y - 86f),
+                    end = Offset(x + 162f, y - 18f)
+                )
+            } else {
+                Brush.linearGradient(
+                    colors = listOf(
+                        Color(0xFF080B10),
+                        Color(0xFF171B22)
+                    )
+                )
+            },
+            topLeft = Offset(x + 68f, y - 85f),
+            size = Size(93f, 65f),
+            cornerRadius = androidx.compose.ui.geometry.CornerRadius(3f)
+        )
+
+        if (computerIsOn) {
+            drawLine(
+                color = Color(0xFFB8F1FF).copy(alpha = 0.8f),
+                start = Offset(x + 78f, y - 69f),
+                end = Offset(x + 130f, y - 69f),
+                strokeWidth = 3f
+            )
+
+            drawLine(
+                color = Color(0xFFB8F1FF).copy(alpha = 0.55f),
+                start = Offset(x + 78f, y - 58f),
+                end = Offset(x + 117f, y - 58f),
+                strokeWidth = 2f
+            )
+        }
+
+        drawRect(
+            color = Color(0xFF30343B),
+            topLeft = Offset(x + 108f, y - 13f),
+            size = Size(14f, 13f)
+        )
+
+        drawRoundRect(
+            color = Color(0xFF30343B),
+            topLeft = Offset(x + 91f, y - 2f),
+            size = Size(48f, 5f),
+            cornerRadius = androidx.compose.ui.geometry.CornerRadius(3f)
+        )
+
+        drawRoundRect(
+            color = Color(0xFF252932),
+            topLeft = Offset(x + 76f, y + 5f),
+            size = Size(92f, 8f),
+            cornerRadius = androidx.compose.ui.geometry.CornerRadius(3f)
+        )
+
+        drawOval(
+            color = Color(0xFF343943),
+            topLeft = Offset(x + 179f, y + 4f),
+            size = Size(13f, 9f)
+        )
+
+        if (computerIsOn && snapshot.isLightingEnabled) {
+            drawRect(
+                brush = Brush.radialGradient(
+                    colors = listOf(
+                        Color(0xFF4ABBEF).copy(alpha = 0.22f),
+                        Color.Transparent
+                    ),
+                    center = Offset(x + 115f, y - 35f),
+                    radius = 145f
+                ),
+                topLeft = Offset(x - 20f, y - 170f),
+                size = Size(265f, 250f)
+            )
+        }
+    }
+
+    // ==================================================
+    // 15. BİTKİ
+    // ==================================================
+
+    private fun DrawScope.drawPlant() {
+        val potX = 965f
+        val potY = 500f
+
+        val pot = Path().apply {
+            moveTo(potX, potY)
+            lineTo(potX + 62f, potY)
+            lineTo(potX + 52f, potY + 65f)
+            lineTo(potX + 10f, potY + 65f)
+            close()
+        }
+
+        drawPath(
+            path = pot,
+            brush = Brush.verticalGradient(
+                colors = listOf(
+                    Color(0xFFD46C4D),
+                    Color(0xFF8E3E35)
+                ),
+                startY = potY,
+                endY = potY + 65f
+            )
+        )
+
+        drawOval(
+            color = Color(0xFFE58A65),
+            topLeft = Offset(potX - 3f, potY - 7f),
+            size = Size(68f, 17f)
+        )
+
+        drawOval(
+            color = Color(0xFF493126),
+            topLeft = Offset(potX + 4f, potY - 4f),
+            size = Size(54f, 10f)
+        )
+
+        drawLine(
+            color = Color(0xFF426B3D),
+            start = Offset(potX + 31f, potY - 5f),
+            end = Offset(potX + 31f, potY - 118f),
+            strokeWidth = 7f,
+            cap = StrokeCap.Round
+        )
+
+        val leafColor = Color(0xFF4F8B4B)
+        val leafHighlight = Color(0xFF80B96A)
+
+        rotate(-38f, pivot = Offset(potX + 29f, potY - 65f)) {
+            drawOval(
+                color = leafColor,
+                topLeft = Offset(potX - 9f, potY - 100f),
+                size = Size(28f, 62f)
+            )
+
+            drawLine(
+                color = leafHighlight,
+                start = Offset(potX + 5f, potY - 95f),
+                end = Offset(potX + 5f, potY - 47f),
+                strokeWidth = 2f
+            )
+        }
+
+        rotate(38f, pivot = Offset(potX + 32f, potY - 83f)) {
+            drawOval(
+                color = Color(0xFF5D9D52),
+                topLeft = Offset(potX + 30f, potY - 125f),
+                size = Size(30f, 67f)
+            )
+
+            drawLine(
+                color = leafHighlight,
+                start = Offset(potX + 45f, potY - 120f),
+                end = Offset(potX + 45f, potY - 68f),
+                strokeWidth = 2f
+            )
+        }
+
+        rotate(-18f, pivot = Offset(potX + 31f, potY - 105f)) {
+            drawOval(
+                color = Color(0xFF72A95A),
+                topLeft = Offset(potX + 9f, potY - 158f),
+                size = Size(30f, 62f)
+            )
+        }
+    }
+
+    // ==================================================
+    // 16. NETHER PORTALI
+    // ==================================================
+
+    private fun DrawScope.drawPortal(
+        snapshot: RoomSnapshot
+    ) {
+        val x = 1050f
+        val y = 290f
+        val width = 110f
+        val height = 240f
+
+        val portalIsActive =
+            snapshot.portalState == PortalState.ACTIVATING ||
+                snapshot.portalState == PortalState.ACTIVE ||
+                snapshot.portalState == PortalState.DESTINATION_READY ||
+                snapshot.portalState == PortalState.ENTERING ||
+                snapshot.portalState == PortalState.TRANSITIONING
+
+        drawRoundRect(
+            color = Color(0xFF29252F),
+            topLeft = Offset(x - 13f, y - 12f),
+            size = Size(width + 26f, height + 24f),
+            cornerRadius = androidx.compose.ui.geometry.CornerRadius(12f)
+        )
+
+        drawRoundRect(
+            color = Color(0xFF716477),
+            topLeft = Offset(x - 5f, y - 5f),
+            size = Size(width + 10f, height + 10f),
+            cornerRadius = androidx.compose.ui.geometry.CornerRadius(8f),
+            style = Stroke(width = 7f)
+        )
+
+        if (portalIsActive) {
+            drawRoundRect(
+                brush = Brush.linearGradient(
+                    colors = listOf(
+                        Color(0xFF40105F),
+                        Color(0xFF8C35C4),
+                        Color(0xFF3A145F),
+                        Color(0xFFB35BE0)
+                    ),
+                    start = Offset(x, y),
+                    end = Offset(x + width, y + height)
+                ),
+                topLeft = Offset(x, y),
+                size = Size(width, height),
+                cornerRadius = androidx.compose.ui.geometry.CornerRadius(7f)
+            )
+
+            for (index in 0..4) {
+                val lineY = y + 28f + index * 43f
+
+                val wave = Path().apply {
+                    moveTo(x + 10f, lineY)
+                    cubicTo(
+                        x + 35f, lineY - 17f,
+                        x + 72f, lineY + 17f,
+                        x + width - 10f, lineY
+                    )
+                }
+
+                drawPath(
+                    path = wave,
+                    color = Color(0xFFE8C4FF).copy(alpha = 0.55f),
+                    style = Stroke(
+                        width = 3f,
+                        cap = StrokeCap.Round,
+                        join = StrokeJoin.Round
+                    )
+                )
+            }
+
+            if (snapshot.isLightingEnabled) {
+                drawRoundRect(
+                    brush = Brush.radialGradient(
+                        colors = listOf(
+                            Color(0xFFB95CFF).copy(alpha = 0.25f),
+                            Color.Transparent
+                        ),
+                        center = Offset(x + width / 2f, y + height / 2f),
+                        radius = 230f
+                    ),
+                    topLeft = Offset(x - 105f, y - 100f),
+                    size = Size(width + 210f, height + 200f)
+                )
+            }
+        } else {
+            drawRoundRect(
+                color = Color(0xFF17121F),
+                topLeft = Offset(x, y),
+                size = Size(width, height),
+                cornerRadius = androidx.compose.ui.geometry.CornerRadius(7f)
+            )
+
+            drawLine(
+                color = Color(0xFF695B70),
+                start = Offset(x + 12f, y + height - 12f),
+                end = Offset(x + width - 12f, y + 12f),
+                strokeWidth = 4f
+            )
+        }
+
+        drawRoundRect(
+            color = Color(0xFF4A414F),
+            topLeft = Offset(x - 20f, y + height + 3f),
+            size = Size(width + 40f, 13f),
+            cornerRadius = androidx.compose.ui.geometry.CornerRadius(4f)
+        )
+    }
+
+    // ==================================================
+    // 17. DUVAR DEKORASYONLARI
+    // ==================================================
+
+    private fun DrawScope.drawWallDecorations() {
+        drawRoundRect(
+            color = Color(0xFF4A3025),
+            topLeft = Offset(370f, 65f),
+            size = Size(145f, 92f),
+            cornerRadius = androidx.compose.ui.geometry.CornerRadius(5f)
+        )
+
+        drawRoundRect(
+            brush = Brush.linearGradient(
+                colors = listOf(
+                    Color(0xFF7BA6B5),
+                    Color(0xFFE3C58E)
+                ),
+                start = Offset(378f, 73f),
+                end = Offset(507f, 149f)
+            ),
+            topLeft = Offset(378f, 73f),
+            size = Size(129f, 76f),
+            cornerRadius = androidx.compose.ui.geometry.CornerRadius(2f)
+        )
+
+        drawCircle(
+            color = Color(0xFFFFD477),
+            radius = 15f,
+            center = Offset(480f, 94f)
+        )
+
+        val mountain = Path().apply {
+            moveTo(380f, 145f)
+            lineTo(418f, 101f)
+            lineTo(446f, 132f)
+            lineTo(469f, 111f)
+            lineTo(507f, 145f)
+            close()
+        }
+
+        drawPath(
+            path = mountain,
+            color = Color(0xFF476B5A)
+        )
+
+        drawCircle(
+            color = Color(0xFF493A32),
+            radius = 29f,
+            center = Offset(620f, 105f)
+        )
+
+        drawCircle(
+            color = Color(0xFFE9DDC7),
+            radius = 24f,
+            center = Offset(620f, 105f)
+        )
+
+        drawLine(
+            color = Color(0xFF493A32),
+            start = Offset(620f, 105f),
+            end = Offset(620f, 88f),
+            strokeWidth = 3f,
+            cap = StrokeCap.Round
+        )
+
+        drawLine(
+            color = Color(0xFF493A32),
+            start = Offset(620f, 105f),
+            end = Offset(634f, 112f),
+            strokeWidth = 3f,
+            cap = StrokeCap.Round
+        )
+
+        drawRect(
+            color = Color(0xFF765039),
+            topLeft = Offset(1040f, 190f),
+            size = Size(135f, 9f)
+        )
+
+        drawRect(
+            color = Color(0xFF533A2C),
+            topLeft = Offset(1050f, 199f),
+            size = Size(8f, 28f)
+        )
+
+        drawRect(
+            color = Color(0xFF533A2C),
+            topLeft = Offset(1157f, 199f),
+            size = Size(8f, 28f)
+        )
+    }
+}
+
+// ======================================================
+// 18. ROOM CANVAS
+// ======================================================
+
+@Composable
+fun RoomCanvas(
+    layout: RoomLayout,
+    lighting: RoomLighting,
+    snapshot: RoomSnapshot,
+    modifier: Modifier = Modifier
+) {
+    Canvas(
+        modifier = modifier.fillMaxSize()
+    ) {
+        RoomRenderer(
+            layout = layout,
+            lighting = lighting
+        ).drawRoom(
+            drawScope = this,
+            snapshot = snapshot
+        )
+    }
+}        
