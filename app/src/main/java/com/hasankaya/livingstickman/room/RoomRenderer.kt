@@ -777,7 +777,7 @@ class RoomRenderer(
             size = Size(85f, 65f),
             cornerRadius = androidx.compose.ui.geometry.CornerRadius(12f)
         )
-/
+
         // Yastık dikiş çizgisi.
         drawLine(
             color = Color(0xFFD1C5B8),
